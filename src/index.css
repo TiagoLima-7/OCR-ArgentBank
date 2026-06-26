@@ -10,6 +10,11 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -19,6 +24,10 @@ body {
 
 .bg-dark {
   background-color: #12002b;
+}
+
+.bg-light {
+  background-color: #dfe6ed;
 }
 
 .sr-only {
@@ -218,7 +227,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid black;
+  border: 2px solid #c2ced9;
   background-color: #fff;
   width: 80%;
   margin: 0 auto;
@@ -233,6 +242,7 @@ body {
   margin: 0;
   font-size: 2.5rem;
   font-weight: bold;
+  padding: 6px 0;
 }
 
 .account-amount-description {
@@ -260,20 +270,23 @@ body {
 }
 
 .header {
-  color: #fff;
+  /* color: #fff; */
+  color: #283845;
   margin-bottom: 2rem;
 }
 
 .transaction-button {
   display: block;
   width: 100%;
-  padding: 8px;
+  padding: 12px;
   font-size: 1.1rem;
   font-weight: bold;
   margin-top: 1rem;
-  border-color: #00bc77;
-  background-color: #00bc77;
+  background-color: #6458f5;
   color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 6px;
 }
 
 @media (min-width: 720px) {
@@ -283,6 +296,7 @@ body {
 
   .account-content-wrapper.cta {
     flex: 0 0 auto;
+    width: unset;
   }
 
   .transaction-button {
