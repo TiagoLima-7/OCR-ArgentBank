@@ -22,10 +22,6 @@ body {
   flex: 1;
 }
 
-.bg-dark {
-  background-color: #12002b;
-}
-
 .bg-light {
   background-color: #dfe6ed;
 }
