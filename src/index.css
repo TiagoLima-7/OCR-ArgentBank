@@ -263,6 +263,9 @@ body {
   color: #fff;
   font-weight: bold;
   padding: 10px;
+  box-shadow: none;
+  outline: none;
+  border: none;
 }
 
 .header {
@@ -298,4 +301,48 @@ body {
   .transaction-button {
     width: 200px;
   }
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.edit-form-inputs {
+  display: flex;
+  gap: 1rem;
+}
+
+.edit-form-inputs input {
+  padding: 8px;
+  font-size: 1rem;
+  border: 3px solid #b8c4ce;
+  color: #b8c4ce;
+  width: 200px;
+  border-radius: 8px;
+}
+
+.edit-form-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.edit-save-button,
+.edit-cancel-button {
+  padding: 8px 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: transparent;
+  border: 2px solid #7165f6;
+  color: #7165f6;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.edit-save-button:hover,
+.edit-cancel-button:hover {
+  background-color: #283845;
+  color: #fff;
 }
