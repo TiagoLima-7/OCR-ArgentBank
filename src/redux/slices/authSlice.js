@@ -7,7 +7,7 @@ export const loginThunk = createAsyncThunk(
     try {
       const data = await loginUser(email, password);
       const token = data.body.token;
-      console.log("Topken :", token);
+      localStorage.setItem("token", token); //sauvegarde du token en localStorage
       //Une fois récupéré le token, on fetch le profil
       dispatch(fetchUserProfile(token));
       return token;
@@ -31,10 +31,13 @@ export const fetchUserProfile = createAsyncThunk(
   },
 );
 
+const token = localStorage.getItem("token"); //récupération du token au démarrage
+
 const initialState = {
   user: null,
-  token: null,
-  isAuthenticated: false,
+  token: token || null,
+  // isAuthenticated: false,
+  isAuthenticated: !!token, //true si token existe
   isLoading: false,
   error: null,
 };
@@ -44,6 +47,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logOut(state) {
+      localStorage.removeItem("token"); //supression du token
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
