@@ -14,7 +14,7 @@ export const loginUser = async (email, password) => {
 
 // User profile recovery
 export const getUserProfile = async (token) => {
-  const response = await apiClient.post("/user/profile", null, {
+  const response = await apiClient.get("/user/profile", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

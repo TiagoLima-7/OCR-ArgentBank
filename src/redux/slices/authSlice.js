@@ -1,14 +1,32 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser } from "../../services/apiService";
+import { getUserProfile, loginUser } from "../../services/apiService";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { dispatch, rejectWithValue }) => {
     try {
       const data = await loginUser(email, password);
-      return data.body.token;
+      const token = data.body.token;
+      console.log("Topken :", token);
+      //Une fois récupéré le token, on fetch le profil
+      dispatch(fetchUserProfile(token));
+      return token;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Login failed");
+    }
+  },
+);
+
+export const fetchUserProfile = createAsyncThunk(
+  "auth/fetchUserProfile",
+  async (token, { rejectWithValue }) => {
+    try {
+      const data = await getUserProfile(token);
+      return data.body;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Profile fetch failed",
+      );
     }
   },
 );
@@ -31,12 +49,10 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.error = null;
     },
-    setUser(state, action) {
-      state.user = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
+      //Login
       .addCase(loginThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -49,6 +65,10 @@ const authSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      //Profil
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
 });

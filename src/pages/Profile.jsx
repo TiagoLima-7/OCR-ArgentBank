@@ -1,11 +1,15 @@
+import { useSelector } from "react-redux";
+
 function Profile() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <main className="main bg-light">
       <div className="header">
         <h1>
           Welcome back
           <br />
-          Tony Stark!
+          {user?.firstName} {user?.lastName}!
         </h1>
         <button className="edit-button">Edit Name</button>
       </div>
