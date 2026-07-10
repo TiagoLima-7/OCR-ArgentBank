@@ -5,9 +5,9 @@ export const loginThunk = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { dispatch, rejectWithValue }) => {
     try {
-      const data = await loginUser(email, password);
+      const data = await loginUser(email, password); //appel API
       const token = data.body.token;
-      localStorage.setItem("token", token); //sauvegarde du token en localStorage
+      sessionStorage.setItem("token", token); //sauvegarde du token en sessionStorage
       //Une fois récupéré le token, on fetch le profil
       dispatch(fetchUserProfile(token));
       return token;
@@ -31,13 +31,15 @@ export const fetchUserProfile = createAsyncThunk(
   },
 );
 
-const token = localStorage.getItem("token"); //récupération du token au démarrage
+const token = sessionStorage.getItem("token"); //récupération du token au démarrage
 
 const initialState = {
   user: null,
   token: token || null,
   // isAuthenticated: false,
-  isAuthenticated: !!token, //true si token existe
+  // isAuthenticated: !!token, //true si token existe
+  // isAuthenticated: token? true : false //true si token existe
+  isAuthenticated: Boolean(token), //true si token existe
   isLoading: false,
   error: null,
 };
@@ -47,7 +49,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logOut(state) {
-      localStorage.removeItem("token"); //supression du token
+      sessionStorage.removeItem("token"); //supression du token
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;

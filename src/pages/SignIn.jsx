@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { loginThunk } from "../redux/slices/authSlice";
 
 function SignIn() {
@@ -8,7 +8,14 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, error } = useSelector((state) => state.auth);
+  const { isLoading, error, isAuthenticated } = useSelector(
+    (state) => state.auth,
+  );
+
+  //Si déjà connecté -> redirige vers /profile
+  if (isAuthenticated) {
+    return <Navigate to="/profile" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

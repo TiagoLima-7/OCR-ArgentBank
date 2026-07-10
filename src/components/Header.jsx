@@ -7,10 +7,11 @@ function Header() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logOut());
-    navigate("/");
+  const handleLogout = async () => {
+    await dispatch(logOut());
+    navigate("/", { replace: true });
   };
+
   return (
     <nav className="main-nav">
       <Link className="main-nav-logo" to="/">
