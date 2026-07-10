@@ -6,6 +6,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
+import Page_404 from "./pages/Page404";
 import PrivateRoute from "./components/PrivateRoute";
 function App() {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="*" element={<Page_404 />} />
       </Routes>
     </BrowserRouter>
   );
