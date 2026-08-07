@@ -42,6 +42,7 @@ const initialState = {
   isAuthenticated: Boolean(token), //true si token existe
   isLoading: false,
   error: null,
+  isLoggingOut: false,
 };
 
 const authSlice = createSlice({
@@ -54,6 +55,7 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       state.error = null;
+      state.isLoggingOut = true;
     },
   },
   extraReducers: (builder) => {

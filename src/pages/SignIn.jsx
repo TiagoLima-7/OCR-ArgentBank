@@ -53,8 +53,17 @@ function SignIn() {
             <input type="checkbox" id="remember-me" />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <button className="sign-in-button" disabled={isLoading}>
+          {error && (
+            <p data-testid="error-message" style={{ color: "red" }}>
+              {error}
+            </p>
+          )}
+          <button
+            className="sign-in-button"
+            disabled={isLoading}
+            data-testid="sign-in-button"
+            role="button"
+          >
             {isLoading ? "Loading..." : "Sign In"}
           </button>
         </form>

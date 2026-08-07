@@ -50,11 +50,11 @@ function Profile() {
 
   return (
     <main className="main bg-light">
-      <div className="header">
+      <div className="header" data-testid="profile-header">
         {isEditing ? (
           <>
             <h1>Welcome back</h1>
-            <div className="edit-form">
+            <div className="edit-form" data-testid="edit-form">
               <div className="edit-form-inputs">
                 <input
                   type="text"
@@ -68,10 +68,18 @@ function Profile() {
                 />
               </div>
               <div className="edit-form-buttons">
-                <button className="edit-save-button" onClick={handleSave}>
+                <button
+                  className="edit-save-button"
+                  onClick={handleSave}
+                  data-testid="save-button"
+                >
                   Save
                 </button>
-                <button className="edit-cancel-button" onClick={handleCancel}>
+                <button
+                  className="edit-cancel-button"
+                  onClick={handleCancel}
+                  data-testid="edit-cancel-button"
+                >
                   Cancel
                 </button>
               </div>
@@ -84,7 +92,11 @@ function Profile() {
               <br />
               {user?.firstName} {user?.lastName}!
             </h1>
-            <button className="edit-button" onClick={handleEditClick}>
+            <button
+              className="edit-button"
+              onClick={handleEditClick}
+              data-testid="edit-button"
+            >
               Edit Name
             </button>
           </>

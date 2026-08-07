@@ -2,7 +2,7 @@ function Home() {
   return (
     <main className="main">
       <div className="hero">
-        <section className="hero-content">
+        <section className="hero-content" data-testid="hero-content">
           <h2 className="sr-only">Promoted Content</h2>
           <p className="subtitle">No fees.</p>
           <p className="subtitle">No minimum deposit.</p>
@@ -10,9 +10,9 @@ function Home() {
           <p className="text">Open a savings account with Argent Bank today!</p>
         </section>
       </div>
-      <section className="features">
+      <section className="features" data-testid="features">
         <h2 className="sr-only">Features</h2>
-        <div className="feature-item">
+        <div className="feature-item" data-testid="feature-item">
           <img src="/icon-chat.png" alt="Chat Icon" className="feature-icon" />
           <h3 className="feature-item-title">You are our #1 priority</h3>
           <p>
@@ -20,7 +20,7 @@ function Home() {
             24/7 chat or through a phone call in less than 5 minutes.
           </p>
         </div>
-        <div className="feature-item">
+        <div className="feature-item" data-testid="feature-item">
           <img
             src="/icon-money.png"
             alt="Money Icon"
@@ -33,7 +33,7 @@ function Home() {
             The more you save with us, the higher your interest rate will be!
           </p>
         </div>
-        <div className="feature-item">
+        <div className="feature-item" data-testid="feature-item">
           <img
             src="/icon-security.png"
             alt="Security Icon"
