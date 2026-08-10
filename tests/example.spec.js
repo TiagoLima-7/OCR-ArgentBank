@@ -61,9 +61,6 @@ test("sign in with correct credentials redirects to profile", async ({
   page,
 }) => {
   await page.goto("/sign-in");
-  // await page.fill("#email", "tony@stark.com");
-  // await page.fill("#password", "password123");
-  // await page.click(".sign-in-button");
   await page.getByLabel("email").fill("tony@stark.com");
   await page.getByLabel("password").fill("password123");
   await page.getByTestId("sign-in-button").click();
@@ -81,13 +78,9 @@ test("accessing /profile without login redirects to /sign-in", async ({
 // ─── Page Profile (après connexion) ───────────────────────────
 test("profile page displays user name after login", async ({ page }) => {
   await page.goto("/sign-in");
-  // await page.fill("#email", "tony@stark.com");
-  // await page.fill("#password", "password123");
-  // await page.getByTestId("sign-in-button").click();
   await page.getByLabel("email").fill("tony@stark.com");
   await page.getByLabel("password").fill("password123");
   await page.getByTestId("sign-in-button").click();
-  // await expect(page.locator("h1")).toContainText("Tony");
   await expect(page.getByTestId("profile-header")).toContainText("Tony");
 });
 
@@ -97,10 +90,11 @@ test("profile page displays 3 account cards", async ({ page }) => {
   await page.getByLabel("password").fill("password123");
   await page.getByTestId("sign-in-button").click();
   await expect(page.getByTestId("account-card")).toHaveCount(3);
-  // await page.fill("#email", "tony@stark.com");
-  // await page.fill("#password", "password123");
-  // await page.click(".sign-in-button");
-  // await expect(page.locator(".account")).toHaveCount(3);
+  await expect(
+    page.getByTestId("account-card").nth(0).locator("h3"),
+  ).toContainText("Argent Bank Checkings");
+
+  // partir sur le css avec nth
 });
 
 test("header shows user first name after login", async ({ page }) => {
@@ -108,10 +102,6 @@ test("header shows user first name after login", async ({ page }) => {
   await page.getByLabel("email").fill("tony@stark.com");
   await page.getByLabel("password").fill("password123");
   await page.getByTestId("sign-in-button").click();
-  // await page.fill("#email", "tony@stark.com");
-  // await page.fill("#password", "password123");
-  // await page.click(".sign-in-button");
-  // await expect(page.locator(".main-nav")).toContainText("Tony");
   await expect(page.getByRole("link", { name: /Tony/i })).toBeVisible();
 });
 
@@ -120,9 +110,6 @@ test("header shows sign out button after login", async ({ page }) => {
   await page.getByLabel("email").fill("tony@stark.com");
   await page.getByLabel("password").fill("password123");
   await page.getByTestId("sign-in-button").click();
-  // await page.fill("#email", "tony@stark.com");
-  // await page.fill("#password", "password123");
-  // await page.click(".sign-in-button");
   await expect(page.getByTestId("sign-out-button")).toBeVisible();
 });
 

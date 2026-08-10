@@ -7,7 +7,6 @@ export const loginThunk = createAsyncThunk(
     try {
       const data = await loginUser(email, password); //appel API
       const token = data.body.token;
-      sessionStorage.setItem("token", token); //sauvegarde du token en sessionStorage
       //Une fois récupéré le token, on fetch le profil
       dispatch(fetchUserProfile(token));
       return token;
@@ -31,15 +30,13 @@ export const fetchUserProfile = createAsyncThunk(
   },
 );
 
-const token = sessionStorage.getItem("token"); //récupération du token au démarrage
-
 const initialState = {
   user: null,
-  token: token || null,
+  token: null,
   // isAuthenticated: false,
   // isAuthenticated: !!token, //true si token existe
   // isAuthenticated: token? true : false //true si token existe
-  isAuthenticated: Boolean(token), //true si token existe
+  isAuthenticated: false, //true si token existe
   isLoading: false,
   error: null,
   isLoggingOut: false,
