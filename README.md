@@ -28,6 +28,7 @@ The back-end repository is available here: [Project-10-Bank-API](https://github.
 | [Redux Toolkit](https://redux-toolkit.js.org/) | 2+      | State management    |
 | [React Router DOM](https://reactrouter.com/)   | 6+      | Client-side routing |
 | [Axios](https://axios-http.com/)               | 1+      | HTTP requests       |
+| [Playwright](https://playwright.dev/)          | 1+      | E2E testing         |
 
 ---
 
@@ -120,6 +121,7 @@ src/
 ├── components/
 │   ├── Header.jsx          # Navigation bar (dynamic based on auth state)
 │   ├── Footer.jsx          # Footer
+│   ├── AccountCard.jsx     # Reusable bank account card component
 │   └── PrivateRoute.jsx    # Route protection component
 ├── layouts/
 │   └── MainLayout.jsx      # Shared layout (Header + Outlet + Footer)
@@ -146,13 +148,20 @@ src/
 ```
 1. User fills in the SignIn form (email + password)
 2. loginThunk dispatched → POST /api/v1/user/login
-3. Token received → saved in Redux + sessionStorage
+3. Token received → saved in Redux store (in-memory only)
 4. fetchUserProfile dispatched → GET /api/v1/user/profile
 5. User data saved in Redux
 6. Redirect to /profile
 ```
 
-Token is persisted in `sessionStorage` - the user stays logged in after page refresh but is automatically logged out when the browser tab is closed.
+The token is stored **only in the Redux store** (JavaScript memory). This means:
+
+- ✅ Token is not accessible via browser DevTools storage tabs
+- ✅ Automatic logout when the browser tab or window is closed
+- ✅ Automatic logout on page refresh (F5)
+- ⚠️ User must log in again after every page refresh
+
+This is a deliberate security choice. The next improvement would be **httpOnly cookies** server-side, which would combine security with persistence.
 
 ---
 
@@ -176,11 +185,13 @@ Token is persisted in `sessionStorage` - the user stays logged in after page ref
 - [x] User can log out of the system
 - [x] User can only view profile after successful login (PrivateRoute)
 - [x] User can edit their first and last name
-- [x] Token persisted in sessionStorage
-- [x] Auto logout on browser tab close
+- [x] Token stored in Redux store only (in-memory, no localStorage/sessionStorage)
+- [x] Auto logout on browser tab/window close or page refresh
 - [x] Redirect to /profile if already logged in
 - [x] 404 page for unknown routes
 - [x] Environment variables for API URL
+- [x] Reusable AccountCard component
+- [x] 20 E2E tests with Playwright (100% passing)
 
 ---
 
@@ -192,12 +203,74 @@ You can visualize it at [editor.swagger.io](https://editor.swagger.io)
 
 ### Proposed Endpoints
 
-| Method  | Route                                                     | Description                        | Auth required |
-| ------- | --------------------------------------------------------- | ---------------------------------- | ------------- |
-| `GET`   | `/user/accounts`                                          | Get all user accounts              | ✅            |
-| `GET`   | `/user/accounts/{accountId}/transactions`                 | Get transactions for current month | ✅            |
-| `GET`   | `/user/accounts/{accountId}/transactions/{transactionId}` | Get transaction details            | ✅            |
-| `PATCH` | `/user/accounts/{accountId}/transactions/{transactionId}` | Update category and/or notes       | ✅            |
+| Method  | Route                                                     | Description                                   | Auth required |
+| ------- | --------------------------------------------------------- | --------------------------------------------- | ------------- |
+| `GET`   | `/user/accounts`                                          | Get all user accounts                         | ✅            |
+| `GET`   | `/user/accounts/{accountId}/transactions`                 | Get transactions with flexible date filtering | ✅            |
+| `GET`   | `/user/accounts/{accountId}/transactions/{transactionId}` | Get transaction details                       | ✅            |
+| `PATCH` | `/user/accounts/{accountId}/transactions/{transactionId}` | Update category and/or notes                  | ✅            |
+
+### Transaction Date Filtering
+
+The `GET /transactions` endpoint supports two mutually exclusive filtering modes:
+
+**Mode 1 - Rolling window (default):**
+
+```
+GET /user/accounts/{accountId}/transactions?days=30
+```
+
+Returns transactions from the last N days. Defaults to 30 days if no parameter is provided.
+
+**Mode 2 - Date range:**
+
+```
+GET /user/accounts/{accountId}/transactions?startDate=2026-01-01&endDate=2026-02-05
+```
+
+Returns transactions between two specific dates (format: `YYYY-MM-DD`). Both parameters must be provided together. If `startDate`/`endDate` are provided alongside `days`, the date range takes priority.
+
+### Category Enum
+
+Transaction categories are fixed and must be selected from the following list:
+
+`Food` · `Shopping` · `Travel` · `Healthcare` · `Entertainment` · `Education` · `Bills` · `Other`
+
+---
+
+## 🧪 Testing
+
+### Run E2E tests
+
+Make sure the back-end server is running first, then:
+
+```bash
+# Run all tests
+npx playwright test
+
+# Run tests in UI mode
+npx playwright test --ui
+
+# Run tests on Chromium only
+npx playwright test --project=chromium
+
+# Show HTML report
+npx playwright show-report
+```
+
+### Test coverage
+
+| Category         | Tests                                     |
+| ---------------- | ----------------------------------------- |
+| Home page        | Title, hero, 3 features                   |
+| Navigation       | Sign In link visible and functional       |
+| 404 page         | Unknown URL → 404 page with back link     |
+| Authentication   | Valid login, invalid login, error message |
+| Protected routes | /profile without login → /sign-in         |
+| Profile          | User name, 3 account cards, header        |
+| Edit Name        | Form visible, cancel closes form          |
+| Logout           | Redirect to home, Sign In visible         |
+| Redirect         | /sign-in while logged in → /profile       |
 
 ---
 
@@ -212,12 +285,13 @@ You can visualize it at [editor.swagger.io](https://editor.swagger.io)
 
 ## 🧪 Available Scripts
 
-| Command           | Description              |
-| ----------------- | ------------------------ |
-| `npm run dev`     | Start development server |
-| `npm run build`   | Build for production     |
-| `npm run preview` | Preview production build |
-| `npm run lint`    | Run ESLint               |
+| Command               | Description              |
+| --------------------- | ------------------------ |
+| `npm run dev`         | Start development server |
+| `npm run build`       | Build for production     |
+| `npm run preview`     | Preview production build |
+| `npm run lint`        | Run ESLint               |
+| `npx playwright test` | Run E2E tests            |
 
 ---
 
