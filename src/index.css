@@ -285,6 +285,8 @@ body {
 
 .logout-container {
   display: flex;
+  font-size: 20px;
+  align-items: center;
 }
 
 .logout-container button {
@@ -294,6 +296,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  font-size: 20px;
+}
+
+.logout-container button i {
+  font-size: 28px;
 }
 .transaction-button {
   display: block;
@@ -307,6 +314,7 @@ body {
   border: none;
   outline: none;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 @media (min-width: 720px) {
