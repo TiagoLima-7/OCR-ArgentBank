@@ -266,6 +266,15 @@ body {
   box-shadow: none;
   outline: none;
   border: none;
+  transition: 0.3s;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.edit-button:hover {
+  border-color: #00bc77;
+  background-color: #fff;
+  color: #00bc77;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -274,6 +283,18 @@ body {
   margin-bottom: 2rem;
 }
 
+.logout-container {
+  display: flex;
+}
+
+.logout-container button {
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 .transaction-button {
   display: block;
   width: 100%;
@@ -345,4 +366,37 @@ body {
 .edit-cancel-button:hover {
   background-color: #283845;
   color: #fff;
+}
+
+.hero-404 {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+.hero-404 h1 {
+  font-size: 100px;
+  margin: 0;
+}
+
+.hero-404 p {
+  font-size: 36px;
+  margin: 0;
+}
+
+@media (min-width: 720px) {
+  .hero-404 {
+    gap: 50px;
+  }
+
+  .hero-404 h1 {
+    font-size: 150px;
+  }
+
+  .hero-404 p {
+    font-size: 48px;
+  }
 }

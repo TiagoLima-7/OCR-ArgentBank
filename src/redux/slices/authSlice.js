@@ -33,10 +33,7 @@ export const fetchUserProfile = createAsyncThunk(
 const initialState = {
   user: null,
   token: null,
-  // isAuthenticated: false,
-  // isAuthenticated: !!token, //true si token existe
-  // isAuthenticated: token? true : false //true si token existe
-  isAuthenticated: false, //true si token existe
+  isAuthenticated: false,
   isLoading: false,
   error: null,
   isLoggingOut: false,
@@ -47,7 +44,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logOut(state) {
-      sessionStorage.removeItem("token"); //supression du token
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;

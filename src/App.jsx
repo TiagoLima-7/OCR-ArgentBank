@@ -31,8 +31,8 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="*" element={<Page_404 />} />
         </Route>
-        <Route path="*" element={<Page_404 />} />
       </Routes>
     </BrowserRouter>
   );

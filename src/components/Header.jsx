@@ -4,13 +4,10 @@ import { logOut } from "../redux/slices/authSlice";
 
 function Header() {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
     dispatch(logOut());
-    // await dispatch(logOut());
-    // navigate("/", { replace: true });
   };
 
   return (
@@ -23,7 +20,7 @@ function Header() {
         />
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
-      <div>
+      <div className="logout-container">
         {isAuthenticated ? (
           <>
             <Link className="main-nav-item" to="/profile">
