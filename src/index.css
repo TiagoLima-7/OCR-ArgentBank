@@ -65,6 +65,10 @@ body {
   text-decoration: underline;
 }
 
+.main-nav-item i {
+  margin-right: 15px;
+}
+
 .main-nav-logo {
   display: flex;
   align-items: center;
@@ -297,6 +301,7 @@ body {
   justify-content: center;
   gap: 10px;
   font-size: 20px;
+  background: none;
 }
 
 .logout-container button i {

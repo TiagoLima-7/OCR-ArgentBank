@@ -4,15 +4,17 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { loginThunk } from "../redux/slices/authSlice";
 
 function SignIn() {
-  const [email, setEmail] = useState("");
+  const savedEmail = localStorage.getItem("rememberedEmail");
+  const [email, setEmail] = useState(savedEmail || "");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(!!savedEmail);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, error, isAuthenticated } = useSelector(
     (state) => state.auth,
   );
 
-  //Si déjà connecté -> redirige vers /profile
+  // Si déjà connecté -> redirige vers /profile
   if (isAuthenticated) {
     return <Navigate to="/profile" replace />;
   }
@@ -21,8 +23,15 @@ function SignIn() {
     e.preventDefault();
     const result = await dispatch(loginThunk({ email, password }));
     if (loginThunk.fulfilled.match(result)) {
+      // Connexion réussie
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email); // sauvegarde l'email
+      } else {
+        localStorage.removeItem("rememberedEmail"); // supprime si décoché
+      }
       navigate("/profile");
     }
+    // Connexion échouée -> on ne touche pas au localStorage
   };
 
   return (
@@ -50,7 +59,12 @@ function SignIn() {
             />
           </div>
           <div className="input-remember">
-            <input type="checkbox" id="remember-me" />
+            <input
+              type="checkbox"
+              id="remember-me"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
             <label htmlFor="remember-me">Remember me</label>
           </div>
           {error && (
