@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-// ─── Page d'accueil ───────────────────────────────────────────
+// --- Page d'accueil -----------------------------------------
 test("home page has correct title", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Argent Bank/);
@@ -16,7 +16,7 @@ test("home page displays 3 features", async ({ page }) => {
   await expect(page.getByTestId("feature-item")).toHaveCount(3);
 });
 
-// ─── Navigation ───────────────────────────────────────────────
+// --- Navigation -----------------------------------------
 test("sign in link is visible in header", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("text=Sign In")).toBeVisible();
@@ -28,7 +28,7 @@ test("clicking sign in link navigates to /sign-in", async ({ page }) => {
   await expect(page).toHaveURL("/sign-in");
 });
 
-// ─── Page 404 ─────────────────────────────────────────────────
+// --- Page 404 -----------------------------------------
 test("unknown route shows 404 page", async ({ page }) => {
   await page.goto("/unknown-page");
   await expect(page.getByTestId("404-title")).toContainText("404");
@@ -39,7 +39,7 @@ test("404 page has back to home button", async ({ page }) => {
   await expect(page.locator("text=Back to Home")).toBeVisible();
 });
 
-// ─── Page SignIn ───────────────────────────────────────────────
+// --- Page SignIn -----------------------------------------
 test("sign in page has email and password fields", async ({ page }) => {
   await page.goto("/sign-in");
   await expect(page.locator("#email")).toBeVisible();
@@ -64,7 +64,7 @@ test("sign in with correct credentials redirects to profile", async ({
   await expect(page).toHaveURL("/profile");
 });
 
-// ─── Route protégée ───────────────────────────────────────────
+// --- Route protégée -----------------------------------------
 test("accessing /profile without login redirects to /sign-in", async ({
   page,
 }) => {
@@ -72,7 +72,7 @@ test("accessing /profile without login redirects to /sign-in", async ({
   await expect(page).toHaveURL("/sign-in");
 });
 
-// ─── Page Profile (après connexion) ───────────────────────────
+// --- Page Profile (après connexion) -----------------------------------------
 test("profile page displays user name after login", async ({ page }) => {
   await page.goto("/sign-in");
   await page.getByLabel("email").fill("tony@stark.com");
@@ -90,8 +90,6 @@ test("profile page displays 3 account cards", async ({ page }) => {
   await expect(
     page.getByTestId("account-card").nth(0).locator("h3"),
   ).toContainText("Argent Bank Checkings");
-
-  // partir sur le css avec nth
 });
 
 test("header shows user first name after login", async ({ page }) => {
@@ -110,7 +108,7 @@ test("header shows sign out button after login", async ({ page }) => {
   await expect(page.getByTestId("sign-out-button")).toBeVisible();
 });
 
-// ─── Edit Name ────────────────────────────────────────────────
+// --- Edit Name -----------------------------------------
 test("edit name form appears when clicking Edit Name", async ({ page }) => {
   await page.goto("/sign-in");
   await page.getByLabel("email").fill("tony@stark.com");
@@ -130,7 +128,7 @@ test("cancel button closes edit form", async ({ page }) => {
   await expect(page.getByTestId("edit-form")).not.toBeVisible();
 });
 
-// ─── Logout ───────────────────────────────────────────────────
+// --- Logout -----------------------------------------
 test("sign out redirects to home page", async ({ page }) => {
   await page.goto("/sign-in");
   await page.getByLabel("email").fill("tony@stark.com");
@@ -149,15 +147,59 @@ test("sign in link visible in header after logout", async ({ page }) => {
   await expect(page.getByRole("link", { name: /Sign in/i })).toBeVisible();
 });
 
-// ─── Redirection si déjà connecté ─────────────────────────────
-// test("accessing /sign-in while logged in redirects to /profile", async ({
-//   page,
-// }) => {
-//   await page.goto("/sign-in");
-//   await page.getByLabel("Email").fill("tony@stark.com");
-//   await page.getByLabel("Password").fill("password123");
-//   await page.getByTestId("sign-in-button").click();
-//   await expect(page).toHaveURL("/profile");
-//   await page.goto("/sign-in");
-//   await expect(page).toHaveURL("/profile");
-// });
+// --- Remember Me -----------------------------------------
+test("failed login does not save email in localStorage", async ({ page }) => {
+  await page.goto("/sign-in");
+  // Coche la case Remember Me
+  await page.locator("#remember-me").check();
+  // Tente une connexion avec de mauvais identifiants
+  await page.getByLabel("Email").fill("wrong@email.com");
+  await page.getByLabel("Password").fill("wrongpassword");
+  await page.getByTestId("sign-in-button").click();
+  // Vérifie que l'email n'est PAS dans localStorage
+  const savedEmail = await page.evaluate(() =>
+    localStorage.getItem("rememberedEmail"),
+  );
+  expect(savedEmail).toBeNull();
+});
+
+test("successful login with remember me saves email in localStorage", async ({
+  page,
+}) => {
+  await page.goto("/sign-in");
+  // Coche la case Remember Me
+  await page.locator("#remember-me").check();
+  // Connexion réussie
+  await page.getByLabel("Email").fill("tony@stark.com");
+  await page.getByLabel("Password").fill("password123");
+  await page.getByTestId("sign-in-button").click();
+  await expect(page).toHaveURL("/profile");
+  // Vérifie que l'email EST dans localStorage
+  const savedEmail = await page.evaluate(() =>
+    localStorage.getItem("rememberedEmail"),
+  );
+  expect(savedEmail).toBe("tony@stark.com");
+});
+
+test("successful login without remember me removes email from localStorage", async ({
+  page,
+}) => {
+  // Simule un email déjà sauvegardé
+  await page.goto("/sign-in");
+  await page.evaluate(() =>
+    localStorage.setItem("rememberedEmail", "tony@stark.com"),
+  );
+  await page.reload();
+  // Décoche la case Remember Me
+  await page.locator("#remember-me").uncheck();
+  // Connexion réussie
+  await page.getByLabel("Email").fill("tony@stark.com");
+  await page.getByLabel("Password").fill("password123");
+  await page.getByTestId("sign-in-button").click();
+  await expect(page).toHaveURL("/profile");
+  // Vérifie que l'email EST supprimé du localStorage
+  const savedEmail = await page.evaluate(() =>
+    localStorage.getItem("rememberedEmail"),
+  );
+  expect(savedEmail).toBeNull();
+});
