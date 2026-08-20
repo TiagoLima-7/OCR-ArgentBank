@@ -151,7 +151,7 @@ test("sign in link visible in header after logout", async ({ page }) => {
 test("failed login does not save email in localStorage", async ({ page }) => {
   await page.goto("/sign-in");
   // Coche la case Remember Me
-  await page.locator("#remember-me").check();
+  await page.getByTestId("remember-me").check();
   // Tente une connexion avec de mauvais identifiants
   await page.getByLabel("Email").fill("wrong@email.com");
   await page.getByLabel("Password").fill("wrongpassword");
@@ -168,7 +168,7 @@ test("successful login with remember me saves email in localStorage", async ({
 }) => {
   await page.goto("/sign-in");
   // Coche la case Remember Me
-  await page.locator("#remember-me").check();
+  await page.getByTestId("remember-me").check();
   // Connexion réussie
   await page.getByLabel("Email").fill("tony@stark.com");
   await page.getByLabel("Password").fill("password123");
@@ -191,7 +191,7 @@ test("successful login without remember me removes email from localStorage", asy
   );
   await page.reload();
   // Décoche la case Remember Me
-  await page.locator("#remember-me").uncheck();
+  await page.getByTestId("remember-me").uncheck();
   // Connexion réussie
   await page.getByLabel("Email").fill("tony@stark.com");
   await page.getByLabel("Password").fill("password123");

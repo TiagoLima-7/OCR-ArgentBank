@@ -62,6 +62,7 @@ function SignIn() {
             <input
               type="checkbox"
               id="remember-me"
+              data-testid="remember-me"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
             />
